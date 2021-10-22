@@ -10,7 +10,7 @@ class InfoAdapter(): RecyclerView.Adapter<InfoAdapter.TodoViewHolder>() {
 
     inner class TodoViewHolder(val binding: ItemTodoBinding): RecyclerView.ViewHolder(binding.root)
 
-    var info: List<Content> = emptyList()
+    var info: List<Content> = listOf()
         set(value) {
             field = value
             notifyDataSetChanged()

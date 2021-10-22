@@ -1,15 +1,11 @@
 package ge.nlatsabidze.retrofitexample
 
-import android.app.ProgressDialog
-import android.os.*
-import android.util.*
-import android.view.*
-import androidx.lifecycle.*
-import androidx.recyclerview.widget.*
-import ge.nlatsabidze.retrofitexample.databinding.*
-import kotlinx.coroutines.*
-import retrofit2.*
-import java.io.*
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import ge.nlatsabidze.retrofitexample.databinding.FragmentMainBinding
 
 const val TAG = "FragmentError"
 
@@ -31,24 +27,11 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     private fun setResult() {
         lifecycleScope.launchWhenCreated {
 
-            delay(1000)
-
-            val response = try {
-
-                RetrofitInstance.API.getTodos()
-            } catch (e: IOException) {
-                Log.e(TAG, "IoException")
-                return@launchWhenCreated
-            } catch (e: HttpException) {
-                Log.e(TAG, "Wrong HTTP")
-                return@launchWhenCreated
+            if (RetrofitInstance.API.getTodos().isSuccessful) {
+                infoAdapter.info = RetrofitInstance.API.getTodos().body()!!.content
             }
-
-            if (response.isSuccessful && response.body() != null) {
-                infoAdapter.info = response.body()!!
-            } else {
-                Log.e(TAG, "Response is not successful")
-            }
+            Log.d("tag", RetrofitInstance.API.getTodos().toString())
         }
+
     }
 }
