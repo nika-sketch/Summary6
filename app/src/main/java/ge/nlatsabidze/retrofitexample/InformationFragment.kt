@@ -3,6 +3,8 @@ package ge.nlatsabidze.retrofitexample
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import ge.nlatsabidze.retrofitexample.databinding.FragmentMainBinding
@@ -12,6 +14,8 @@ const val TAG = "FragmentError"
 class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::inflate) {
 
     private lateinit var infoAdapter: InfoAdapter
+
+    private val viewModel: InfoFragmentViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpRecyclerView()
@@ -25,13 +29,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     }
 
     private fun setResult() {
-        lifecycleScope.launchWhenCreated {
+        viewModel.setResult()
 
-            if (RetrofitInstance.API.getTodos().isSuccessful) {
-                infoAdapter.info = RetrofitInstance.API.getTodos().body()!!.content
-            }
-            Log.d("tag", RetrofitInstance.API.getTodos().toString())
-        }
-
+        viewModel.info.observe(viewLifecycleOwner, {
+            infoAdapter.info = it
+        })
     }
 }
